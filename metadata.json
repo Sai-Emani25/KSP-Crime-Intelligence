@@ -1,0 +1,6 @@
+{
+  "name": "KSP Strategic Crime Intelligence Hub",
+  "description": "AI-Driven Crime Analytics, Geospatial Hotspot Mapping, and Link Analysis for Karnataka State Police & SCRB",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
