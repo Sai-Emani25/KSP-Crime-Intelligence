@@ -417,18 +417,21 @@ export function generateLargeDataset(): Incident[] {
       const r2 = Math.cos(idCounter * 78.233 + i) * 43758.5453 % 1;
       const r3 = Math.abs(Math.sin(i * 3.14159));
       
-      const lat = dist.lat + (r1 - 0.5) * dist.spread;
-      const lng = dist.lng + (r2 - 0.5) * dist.spread;
+      const rawLat = dist.lat + (r1 - 0.5) * dist.spread;
+      const rawLng = dist.lng + (r2 - 0.5) * dist.spread;
+
+      const safeLat = isNaN(rawLat) || !isFinite(rawLat) ? dist.lat : Number(rawLat.toFixed(5));
+      const safeLng = isNaN(rawLng) || !isFinite(rawLng) ? dist.lng : Number(rawLng.toFixed(5));
       
       const categoryIdx = Math.floor(Math.abs(r1 * 10)) % categories.length;
       const category = categories[categoryIdx];
       
-      const hour = Math.floor(Math.abs(r2 * 24));
+      const hour = Math.floor(Math.abs(r2 * 24)) % 24;
       
       // Days offset from current date
       const daysAgo = Math.floor(r3 * 90);
       const date = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000);
-      date.setHours(hour, Math.floor(r1 * 60));
+      date.setHours(hour, Math.floor(Math.abs(r1) * 60) % 60);
 
       incidents.push({
         incident_id: `INC-2026-${String(idCounter).padStart(5, '0')}`,
@@ -439,8 +442,8 @@ export function generateLargeDataset(): Incident[] {
         modus_operandi: `${category} incident involving localized pattern #${(i % 20) + 1}`,
         timestamp: date.toISOString(),
         time_of_day_hour: hour,
-        latitude: Number(lat.toFixed(5)),
-        longitude: Number(lng.toFixed(5)),
+        latitude: safeLat,
+        longitude: safeLng,
         status: i % 4 === 0 ? 'Under Investigation' : i % 3 === 0 ? 'Charge Sheeted' : 'Closed',
         severity: i % 10 === 0 ? 'Critical' : i % 4 === 0 ? 'Severe' : 'Moderate',
         loss_amount_inr: category === 'Cybercrime' || category === 'Financial Fraud' ? Math.floor(r1 * 5000000) : 0,

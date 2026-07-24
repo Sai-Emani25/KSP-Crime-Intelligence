@@ -25,6 +25,7 @@ export default function App() {
   const [isFIRModalOpen, setIsFIRModalOpen] = useState<boolean>(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
   const [copilotInitialPrompt, setCopilotInitialPrompt] = useState<string>('');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
 
   // Fetch initial incidents dataset from Express backend
   useEffect(() => {
@@ -59,6 +60,12 @@ export default function App() {
         onOpenReportModal={() => setIsReportModalOpen(true)}
         onToggleAICopilot={() => setActiveTab('ai_copilot')}
         activeAnomaliesCount={MOCK_ANOMALIES.length}
+        incidents={incidents}
+        suspects={suspects}
+        onOpenSuspectDossier={(suspect) => setActiveSuspectModal(suspect)}
+        onNavigateTab={(tab) => setActiveTab(tab)}
+        isSidebarCollapsed={isSidebarCollapsed}
+        onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
       />
 
       {/* Main Body Layout */}
@@ -68,6 +75,8 @@ export default function App() {
           activeTab={activeTab}
           onTabChange={setActiveTab}
           incidentsCount={incidents.length}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
         />
 
         {/* Content View Switcher */}
